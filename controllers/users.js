@@ -18,20 +18,17 @@ module.exports.getAboutMe = (req, res, next) => {
 
 module.exports.editProfile = (req, res, next) => {
   const { name, email } = req.body;
-  const newData = {};
-  if (name) newData.name = name;
-  if (email) newData.email = email;
 
   User.findByIdAndUpdate(
     req.user._id,
-    newData,
+    { name, email },
     {
       new: true,
       runValidators: true,
     },
   )
     .orFail(() => new NotFoundError('Пользователь не найден'))
-    .then((user) => res.send(user))
+    .then((user) => res.send({ email: user.email, name: user.name }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError('Переданы некорректные данные в методе редактирования профиля');
