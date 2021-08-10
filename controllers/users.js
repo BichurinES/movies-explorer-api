@@ -79,7 +79,7 @@ module.exports.login = (req, res, next) => {
             httpOnly: true,
             maxAge: 3600000 * 24 * 7,
             sameSite: true,
-          }).send({ message: 'Вход успешно осуществлён' });
+          }).send({ message: 'Вход успешно выполнен' });
         })
         .catch(next);
     })
@@ -95,7 +95,7 @@ module.exports.login = (req, res, next) => {
 
 module.exports.logout = (req, res, next) => {
   try {
-    res.clearCookie('jwt').end();
+    res.clearCookie('jwt').send({ message: 'Выход из пользователя выполнен' });
   } catch (err) {
     next(err);
   }
