@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const { PORT = 3000 } = process.env;
 const errorsHandler = require('./middlewares/errors-handler');
 const celebrateErrorsHandler = require('./middlewares/celebrate-err-handler');
+const corsHandler = require('./middlewares/cors');
 const router = require('./routes');
 
 const app = express();
@@ -15,6 +16,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(corsHandler);
 app.use('/', router);
 
 app.use(celebrateErrorsHandler);
