@@ -1,9 +1,11 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const auth = require('../middlewares/auth');
+const { apiLimiter, signupLimiter } = require('../middlewares/rate-limit');
 const { createUser, login, logout } = require('../controllers/users');
 
-router.post('/signup', celebrate({
+router.use(apiLimiter);
+router.post('/signup', signupLimiter, celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
