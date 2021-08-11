@@ -10,15 +10,18 @@ const errorsHandler = require('./middlewares/errors-handler');
 const celebrateErrorsHandler = require('./middlewares/celebrate-err-handler');
 const corsHandler = require('./middlewares/cors');
 const router = require('./routes');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(requestLogger);
 app.use(corsHandler);
 app.use('/', router);
 
+app.use(errorLogger);
 app.use(celebrateErrorsHandler);
 app.use(errorsHandler);
 
