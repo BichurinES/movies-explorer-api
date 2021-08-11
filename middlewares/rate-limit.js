@@ -11,3 +11,9 @@ module.exports.signupLimiter = rateLimit({
   max: 5,
   message: { message: 'Слишком много запросов, попробуйте повторить позже' },
 });
+
+module.exports.signinLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 15,
+  message: { message: 'Слишком много запросов, попробуйте повторить позже' },
+});
