@@ -3,6 +3,13 @@ const ValidationError = require('../errors/validation-err');
 const ConflictError = require('../errors/conflict-err');
 const NotAccessError = require('../errors/not-access-err');
 const NotFoundError = require('../errors/not-found-err');
+const {
+  MOVIE_EXISTS_ERR_MSG,
+  ADDMOVIE_VALIDATION_ERR_MSG,
+  DELETEMOVIE_VALIDATION_ERR_MSG,
+  MOVIE_NOT_FOUND_ERR_MSG,
+  NOT_ACCESS_ERR_MSG,
+} = require('../utils/constants');
 
 module.exports.getMyMovies = (req, res, next) => {
   Movie.find({})
@@ -22,9 +29,9 @@ module.exports.addMovie = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'MongoError' && err.code === 11000) {
-        throw new ConflictError('Фильм уже есть в списке сохраненных');
+        throw new ConflictError(MOVIE_EXISTS_ERR_MSG);
       } else if (err.name === 'ValidationError') {
-        throw new ValidationError('Переданы некорректные данные в методе добавления фильма');
+        throw new ValidationError(ADDMOVIE_VALIDATION_ERR_MSG);
       } else {
         throw err;
       }
@@ -35,18 +42,18 @@ module.exports.addMovie = (req, res, next) => {
 module.exports.deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
   Movie.findOne({ movieId })
-    .orFail(() => new NotFoundError('Фильм с таким id не найден'))
+    .orFail(() => new NotFoundError(MOVIE_NOT_FOUND_ERR_MSG))
     .then((movie) => {
       if (movie.owner.toString() !== req.user._id) {
-        throw new NotAccessError('Недостаточно прав на удаление фильма');
+        throw new NotAccessError(NOT_ACCESS_ERR_MSG);
       }
       Movie.findByIdAndRemove(movie._id)
-        .orFail(() => new NotFoundError('Фильм с таким id не найден'))
+        .orFail(() => new NotFoundError(MOVIE_NOT_FOUND_ERR_MSG))
         .populate('owner')
         .then((removedMovie) => res.send(removedMovie))
         .catch((err) => {
           if (err.name === 'CastError') {
-            throw new ValidationError('Переданы некорректный id в методе удаления фильма');
+            throw new ValidationError(DELETEMOVIE_VALIDATION_ERR_MSG);
           } else {
             throw err;
           }
@@ -55,7 +62,7 @@ module.exports.deleteMovie = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        throw new ValidationError('Переданы некорректный id в методе удаления фильма');
+        throw new ValidationError(DELETEMOVIE_VALIDATION_ERR_MSG);
       } else {
         throw err;
       }

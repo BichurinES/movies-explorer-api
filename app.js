@@ -6,7 +6,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, MONGODB_URL, NODE_ENV } = process.env;
+const { DEFAULT_MONGODB_URL } = require('./utils/constants');
 const errorsHandler = require('./middlewares/errors-handler');
 const celebrateErrorsHandler = require('./middlewares/celebrate-err-handler');
 const corsHandler = require('./middlewares/cors');
@@ -27,7 +28,7 @@ app.use(errorLogger);
 app.use(celebrateErrorsHandler);
 app.use(errorsHandler);
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
+mongoose.connect(NODE_ENV === 'production' ? MONGODB_URL : DEFAULT_MONGODB_URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
