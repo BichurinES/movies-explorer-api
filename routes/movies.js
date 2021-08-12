@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { getMyMovies, addMovie, deleteMovie } = require('../controllers/movies');
-const { urlPattern } = require('../utils/regex-pattern');
+const urlValidator = require('../utils/url-validator');
 
 router.get('/', getMyMovies);
 router.post('/', celebrate({
@@ -11,17 +11,17 @@ router.post('/', celebrate({
     duration: Joi.number().required(),
     year: Joi.string().required().length(4),
     description: Joi.string().required(),
-    image: Joi.string().required().regex(urlPattern),
-    trailer: Joi.string().required().regex(urlPattern),
-    thumbnail: Joi.string().required().regex(urlPattern),
-    movieId: Joi.string().required().length(24).hex(),
+    image: Joi.string().required().custom(urlValidator),
+    trailer: Joi.string().required().custom(urlValidator),
+    thumbnail: Joi.string().required().custom(urlValidator),
+    movieId: Joi.number().required().integer(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
   }),
 }), addMovie);
-router.delete('/:movieId', celebrate({
+router.delete('/:_id', celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().required().length(24).hex(),
+    _id: Joi.string().required().length(24).hex(),
   }),
 }), deleteMovie);
 

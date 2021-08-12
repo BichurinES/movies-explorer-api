@@ -12,6 +12,7 @@ const errorsHandler = require('./middlewares/errors-handler');
 const celebrateErrorsHandler = require('./middlewares/celebrate-err-handler');
 const corsHandler = require('./middlewares/cors');
 const router = require('./routes');
+const { apiLimiter } = require('./middlewares/rate-limit');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(cookieParser());
 app.use(helmet());
 app.use(requestLogger);
 app.use(corsHandler);
+app.use(apiLimiter);
 app.use('/', router);
 
 app.use(errorLogger);

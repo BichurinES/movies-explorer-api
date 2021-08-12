@@ -41,7 +41,9 @@ module.exports.editProfile = (req, res, next) => {
     .orFail(() => new NotFoundError(USER_NOT_FOUND_ERR_MSG))
     .then((user) => res.send({ email: user.email, name: user.name }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'MongoError' && err.code === 11000) {
+        throw new ConflictError(USER_EXISTS_ERR_MSG);
+      } else if (err.name === 'ValidationError') {
         throw new ValidationError(EDITPROFILE_VALIDATION_ERR_MSG);
       } else {
         throw err;
@@ -53,19 +55,16 @@ module.exports.editProfile = (req, res, next) => {
 module.exports.createUser = (req, res, next) => {
   const { email, password, name } = req.body;
   bcrypt.hash(password, 10)
-    .then((hash) => {
-      User.create({ email, password: hash, name })
-        .then((user) => res.send({ email: user.email, name: user.name }))
-        .catch((err) => {
-          if (err.name === 'MongoError' && err.code === 11000) {
-            throw new ConflictError(USER_EXISTS_ERR_MSG);
-          } else if (err.name === 'ValidationError') {
-            throw new ValidationError(CREATEUSER_VALIDATION_ERR_MSG);
-          } else {
-            throw err;
-          }
-        })
-        .catch(next);
+    .then((hash) => User.create({ email, password: hash, name })
+      .then((user) => res.send({ email: user.email, name: user.name })))
+    .catch((err) => {
+      if (err.name === 'MongoError' && err.code === 11000) {
+        throw new ConflictError(USER_EXISTS_ERR_MSG);
+      } else if (err.name === 'ValidationError') {
+        throw new ValidationError(CREATEUSER_VALIDATION_ERR_MSG);
+      } else {
+        throw err;
+      }
     })
     .catch(next);
 };
@@ -76,24 +75,21 @@ module.exports.login = (req, res, next) => {
   User.findOne({ email })
     .orFail(() => new NotFoundError(CREDENTIALS_NOT_FOUND_ERR_MSG))
     .select('+password')
-    .then((user) => {
-      bcrypt.compare(password, user.password)
-        .then((matched) => {
-          if (!matched) {
-            throw new NotFoundError(CREDENTIALS_NOT_FOUND_ERR_MSG);
-          }
+    .then((user) => bcrypt.compare(password, user.password)
+      .then((matched) => {
+        if (!matched) {
+          throw new NotFoundError(CREDENTIALS_NOT_FOUND_ERR_MSG);
+        }
 
-          const token = jwt.sign({ _id: user._id },
-            NODE_ENV === 'production' ? JWT_SECRET : DEFAULT_JWT);
+        const token = jwt.sign({ _id: user._id },
+          NODE_ENV === 'production' ? JWT_SECRET : DEFAULT_JWT);
 
-          res.cookie('jwt', token, {
-            httpOnly: true,
-            maxAge: 3600000 * 24 * 7,
-            sameSite: true,
-          }).send({ message: LOGIN_MSG });
-        })
-        .catch(next);
-    })
+        res.cookie('jwt', token, {
+          httpOnly: true,
+          maxAge: 3600000 * 24 * 7,
+          sameSite: true,
+        }).send({ message: LOGIN_MSG });
+      }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError(LOGIN_VALIDATION_ERR_MSG);

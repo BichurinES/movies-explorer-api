@@ -40,25 +40,16 @@ module.exports.addMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  const { movieId } = req.params;
-  Movie.findOne({ movieId })
+  const { _id } = req.params;
+
+  Movie.findById(_id)
     .orFail(() => new NotFoundError(MOVIE_NOT_FOUND_ERR_MSG))
     .then((movie) => {
       if (movie.owner.toString() !== req.user._id) {
         throw new NotAccessError(NOT_ACCESS_ERR_MSG);
       }
-      Movie.findByIdAndRemove(movie._id)
-        .orFail(() => new NotFoundError(MOVIE_NOT_FOUND_ERR_MSG))
-        .populate('owner')
-        .then((removedMovie) => res.send(removedMovie))
-        .catch((err) => {
-          if (err.name === 'CastError') {
-            throw new ValidationError(DELETEMOVIE_VALIDATION_ERR_MSG);
-          } else {
-            throw err;
-          }
-        })
-        .catch(next);
+      return movie.remove()
+        .then((removedMovie) => res.send(removedMovie));
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
