@@ -5,7 +5,6 @@ const { INVALID_URL_ERR_MSG } = require('../utils/constants');
 const movieSchema = mongoose.Schema({
   country: {
     type: String,
-    required: true,
   },
   director: {
     type: String,
@@ -17,7 +16,6 @@ const movieSchema = mongoose.Schema({
   },
   year: {
     type: String,
-    required: true,
     length: 4,
   },
   description: {
@@ -64,7 +62,6 @@ const movieSchema = mongoose.Schema({
   },
   nameEN: {
     type: String,
-    required: true,
   },
 });
 
