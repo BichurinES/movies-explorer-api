@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 
-const { PORT = 4000, MONGODB_URL, NODE_ENV } = process.env;
+const { PORT = 3000, MONGODB_URL, NODE_ENV } = process.env;
 const { DEFAULT_MONGODB_URL } = require('./utils/constants');
 const errorsHandler = require('./middlewares/errors-handler');
 const celebrateErrorsHandler = require('./middlewares/celebrate-err-handler');
