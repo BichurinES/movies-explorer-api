@@ -85,9 +85,7 @@ module.exports.login = (req, res, next) => {
           NODE_ENV === 'production' ? JWT_SECRET : DEFAULT_JWT);
 
         res.cookie('jwt', token, {
-          httpOnly: true,
           maxAge: 3600000 * 24 * 7,
-          domain: 'localhost',
         }).send({ message: LOGIN_MSG });
       }))
     .catch((err) => {
