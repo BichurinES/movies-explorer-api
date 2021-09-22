@@ -4,6 +4,7 @@ module.exports.DEFAULT_JWT = 'dev-secret-key';
 
 // CORS
 module.exports.ALLOWED_CORS = [
+  'http://127.0.0.1:3000',
   'http://localhost:3000',
 ];
 module.exports.DEFAULT_ALLOWED_METHODS = 'GET,PATCH,POST,DELETE,OPTIONS';
