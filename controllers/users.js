@@ -89,7 +89,6 @@ module.exports.login = (req, res, next) => {
           secure: true,
           maxAge: 3600000 * 24 * 7,
           sameSite: false,
-          domain: 'movielike.nomoredomains.club',
         }).send({ message: LOGIN_MSG });
       }))
     .catch((err) => {
