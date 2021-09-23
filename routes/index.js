@@ -17,10 +17,10 @@ router.post('/signin', signinLimiter, celebrate({
     password: Joi.string().required(),
   }),
 }), login);
-router.post('/signout', logout);
+router.post('/signout', auth, logout);
 
-router.use('/users', require('./users'));
-router.use('/movies', require('./movies'));
-router.use('*', require('./others'));
+router.use('/users', auth, require('./users'));
+router.use('/movies', auth, require('./movies'));
+router.use('*', auth, require('./others'));
 
 module.exports = router;

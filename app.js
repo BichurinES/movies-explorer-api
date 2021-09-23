@@ -24,7 +24,7 @@ app.use(helmet());
 app.use(requestLogger);
 app.use(corsHandler);
 app.use(apiLimiter);
-app.use('/', router);
+app.use('/api', router);
 
 app.use(errorLogger);
 app.use(celebrateErrorsHandler);
