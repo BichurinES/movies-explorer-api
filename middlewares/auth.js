@@ -8,6 +8,7 @@ module.exports = (req, res, next) => {
   const token = req.cookies.jwt;
 
   if (!token) {
+    res.send(1);
     throw new AuthError(AUTH_ERR_MSG);
   }
 
