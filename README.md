@@ -1,13 +1,18 @@
 # Проект - MovieLike - Backend-часть
 
 ## Описание проекта
-Проект представляет собой журнал путешественника, с возможностью добавления новых мест, после их посещения.
+Проект представляет собой сервис по поиску и сохранению своих любимых фильмов.
 
-Ориентирован на просмотр с любого устройства.
-
-Ссылка на проект: **https://api.mestogram.nomoredomains.monster**
+URL backend-части проекта: **https://api.mestogram.nomoredomains.monster**
+Ссылка на frontend-часть проекта: **https://movielike.nomoredomains.club/**
 
 ## Используемые технологии:
+![](https://img.shields.io/badge/Backend-Node.js-informational?style=flat&logo=node.js&logoColor=white&color=2bbc8a)
+![](https://img.shields.io/badge/Framework-Express.js-informational?style=flat&logo=node.js&logoColor=white&color=2bbc8a)
+![](https://img.shields.io/badge/Database-MongoDB-informational?style=flat&logo=MongoDB&logoColor=white&color=2bbc8a)
+![](https://img.shields.io/badge/Data%20model-Mongoose-informational?style=flat&logo=MongoDB&logoColor=white&color=2bbc8a)
+![](https://img.shields.io/badge/Validation-Celebrate-informational?style=flat&logo=C&logoColor=white&color=2bbc8a)
+
 
 __BACKEND__
 * __Express__
@@ -18,6 +23,7 @@ __BACKEND__
   * Добавление, удаление любимых фильмов, получение списка любимых фильмов
   * Редактирование профиля пользователя
   * Модели и связка с базой данных MongoDB
+  * Защита от DDos атак через библиотеку Helmet
 
 ## API
 * __Routes:__
@@ -29,3 +35,18 @@ __BACKEND__
   * POST /signup - создаёт пользователя с переданными в теле email, password и name;
   * POST /signin - проверяет переданные в теле почту и пароль и возвращает JWT;
   * POST /signout - выход пользователя из системы и удаляет JWT из куков;
+
+## Команды
+
+### `npm run dev`
+
+Запуск приложения в режиме разработки.<br/>
+URL в режиме разработки: [http://localhost:3000](http://localhost:3000).
+
+### `npm run start`
+
+Запуск сервера в режиме production.
+
+### `npm run lint`
+
+Проверка проекта линтером.
